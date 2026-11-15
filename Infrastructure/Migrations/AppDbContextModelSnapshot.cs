@@ -68,11 +68,15 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoriaId");
+
+                    b.HasIndex("Nombre")
+                        .IsUnique();
 
                     b.ToTable("Recetas");
                 });

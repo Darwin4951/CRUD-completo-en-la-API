@@ -1,6 +1,44 @@
-@Api_HostAddress = http://localhost:5171
+@Api_HostAddress = http://localhost:5182
 
-GET {{Api_HostAddress}}/weatherforecast/
-Accept: application/json
+### Crear (201 y Location)
+# @name crearReceta
+POST {{Api_HostAddress}}/api/recetas
+Content-Type: application/json
 
-###
+{"nombre":"Sopa de prueba","categoriaId":1}
+
+### Listar (200)
+GET {{Api_HostAddress}}/api/recetas?search=sopa&categoriaId=1&page=1&pageSize=10
+
+### Detalle (200)
+GET {{Api_HostAddress}}/api/recetas/{{crearReceta.response.body.$.id}}
+
+### Actualizar (204)
+PUT {{Api_HostAddress}}/api/recetas/{{crearReceta.response.body.$.id}}
+Content-Type: application/json
+
+{"nombre":"Sopa de prueba actualizada","categoriaId":2}
+
+### Nombre obligatorio (400)
+POST {{Api_HostAddress}}/api/recetas
+Content-Type: application/json
+
+{"nombre":"","categoriaId":1}
+
+### Categoría inexistente (400)
+POST {{Api_HostAddress}}/api/recetas
+Content-Type: application/json
+
+{"nombre":"Receta sin categoría válida","categoriaId":2147483647}
+
+### Nombre duplicado (409)
+POST {{Api_HostAddress}}/api/recetas
+Content-Type: application/json
+
+{"nombre":"Sopa de prueba actualizada","categoriaId":1}
+
+### Eliminar (204)
+DELETE {{Api_HostAddress}}/api/recetas/{{crearReceta.response.body.$.id}}
+
+### Detalle del registro eliminado (404)
+GET {{Api_HostAddress}}/api/recetas/{{crearReceta.response.body.$.id}}

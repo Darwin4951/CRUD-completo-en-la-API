@@ -1,3 +1,4 @@
+using Api;
 using Application;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +10,18 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
     ?? throw new InvalidOperationException("Falta la cadena de conexión DefaultConnection.");
 
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<RecetaExceptionHandler>();
+builder.Services.AddScoped<IRecetaRepository, RecetaRepository>();
+builder.Services.AddScoped<RecetaService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 
 var app = builder.Build();
+app.UseExceptionHandler();
+app.MapControllers();
 
 if (app.Environment.IsDevelopment())
 {
